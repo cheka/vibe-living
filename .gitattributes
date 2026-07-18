@@ -1,0 +1,3 @@
+* text=auto eol=lf
+*.png binary
+plugins/vibe-living/bin/* binary

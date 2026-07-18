@@ -1,0 +1,20 @@
+{
+  "name": "vibe-living",
+  "interface": {
+    "displayName": "Vibe Living"
+  },
+  "plugins": [
+    {
+      "name": "vibe-living",
+      "source": {
+        "source": "local",
+        "path": "./plugins/vibe-living"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

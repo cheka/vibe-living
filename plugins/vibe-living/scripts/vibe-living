@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# Install the bundled native helper, then reuse it for every hook event.
+# Unsupported Mac architectures fall back to a one-time local build.
+# All failures are intentionally silent: Vibe Living must never block an agent.
+
+set -u
+
+action="${1:-working}"
+session_id="${2:-default}"
+script_dir="$(cd "$(dirname "$0")" && pwd)"
+plugin_root="${CLAUDE_PLUGIN_ROOT:-${PLUGIN_ROOT:-$(cd "$script_dir/.." && pwd)}}"
+plugin_data="${CLAUDE_PLUGIN_DATA:-${PLUGIN_DATA:-${TMPDIR:-/tmp}/vibe-living-${UID}}}"
+
+if [ "$(uname -s)" != "Darwin" ]; then
+  exit 0
+fi
+
+mkdir -p "$plugin_data" 2>/dev/null || exit 0
+
+source_file="$plugin_root/scripts/VibeLiving.swift"
+binary="$plugin_data/vibe-living"
+hash_file="$plugin_data/source.sha256"
+architecture="$(uname -m)"
+packaged_binary="$plugin_root/bin/vibe-living-$architecture"
+source_hash="$(/usr/bin/shasum -a 256 "$source_file" 2>/dev/null | /usr/bin/awk '{print $1}')"
+stored_hash=""
+if [ -f "$hash_file" ]; then
+  stored_hash="$(/bin/cat "$hash_file" 2>/dev/null)"
+fi
+
+if { [ ! -x "$binary" ] || [ "$source_hash" != "$stored_hash" ]; } && [ -x "$packaged_binary" ]; then
+  temp_binary="$plugin_data/vibe-living.install.$$"
+  if /bin/cp "$packaged_binary" "$temp_binary" 2>/dev/null; then
+    /bin/chmod 755 "$temp_binary"
+    /bin/mv "$temp_binary" "$binary"
+    /usr/bin/printf '%s' "$source_hash" > "$hash_file"
+    stored_hash="$source_hash"
+  fi
+fi
+
+if [ ! -x "$binary" ] || [ "$source_hash" != "$stored_hash" ]; then
+  lock_dir="$plugin_data/build.lock"
+  if [ -d "$lock_dir" ]; then
+    lock_modified="$(/usr/bin/stat -f '%m' "$lock_dir" 2>/dev/null || /usr/bin/printf '0')"
+    now="$(/bin/date +%s)"
+    if [ $((now - lock_modified)) -gt 120 ]; then
+      /bin/rmdir "$lock_dir" 2>/dev/null
+    fi
+  fi
+  attempts=0
+  while ! /bin/mkdir "$lock_dir" 2>/dev/null; do
+    attempts=$((attempts + 1))
+    if [ "$attempts" -ge 50 ]; then
+      exit 0
+    fi
+    /bin/sleep 0.1
+  done
+
+  if [ ! -x "$binary" ] || [ "$source_hash" != "$(/bin/cat "$hash_file" 2>/dev/null)" ]; then
+    temp_binary="$plugin_data/vibe-living.new.$$"
+    if /usr/bin/xcrun swiftc -O -framework AppKit "$source_file" -o "$temp_binary" >/dev/null 2>&1; then
+      /bin/mv "$temp_binary" "$binary"
+      /bin/chmod 755 "$binary"
+      /usr/bin/printf '%s' "$source_hash" > "$hash_file"
+    else
+      /bin/rm -f "$temp_binary"
+    fi
+  fi
+  /bin/rmdir "$lock_dir" 2>/dev/null
+fi
+
+if [ -x "$binary" ]; then
+  "$binary" "$action" "$session_id" "$plugin_data" >/dev/null 2>&1
+fi
+
+exit 0

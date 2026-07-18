@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "vibe-living",
+  "displayName": "Vibe Living",
+  "version": "0.1.0",
+  "description": "A gentle movement companion for the moments when Claude Code is working.",
+  "author": {
+    "name": "Wangjie"
+  },
+  "license": "MIT",
+  "keywords": ["wellbeing", "movement", "focus", "pixel-art", "coding"]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "vibe-living",
+  "version": "0.1.0",
+  "description": "A gentle movement companion for the moments when your AI coding agent is working.",
+  "author": {
+    "name": "Wangjie"
+  },
+  "license": "MIT",
+  "keywords": ["wellbeing", "movement", "focus", "pixel-art", "coding"],
+  "interface": {
+    "displayName": "Vibe Living",
+    "shortDescription": "Move while your coding agent works.",
+    "longDescription": "Vibe Living shows a small pixel-style movement companion during active coding-agent turns, steps aside when input is needed, and disappears when the turn finishes.",
+    "developerName": "Wangjie",
+    "category": "Productivity",
+    "capabilities": ["Lifecycle hooks", "Local animation"],
+    "defaultPrompt": [
+      "Show me how Vibe Living works.",
+      "Pause movement prompts for ten minutes."
+    ],
+    "brandColor": "#72E6B1",
+    "screenshots": [
+      "./assets/preview.png",
+      "./assets/hydration-preview.png"
+    ]
+  }
+}

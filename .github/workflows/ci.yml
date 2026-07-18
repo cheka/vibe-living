@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check repository and Harness
+        run: make check
+      - name: Build native helper
+        run: make build
+      - name: Upload native helper
+        uses: actions/upload-artifact@v4
+        with:
+          name: vibe-living-${{ runner.arch }}
+          path: plugins/vibe-living/bin/vibe-living-*
