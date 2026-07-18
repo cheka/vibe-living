@@ -23,7 +23,7 @@ Vibe Coding changes how we spend development time: less continuous typing, more 
 ## Features
 
 - Appears after the agent has worked for six seconds.
-- Rotates through small shoulder rolls, seated torso turns, wrist relaxation, quiet posture changes, and hydration reminders.
+- Rotates through small shoulder rolls, fixed-hip seated torso turns, relaxed wrist-and-finger motions, quiet posture changes, and hydration reminders.
 - Keeps every movement quiet, low-amplitude, equipment-free, and within one person's desk space.
 - Automatically displays Simplified Chinese or English from the macOS preferred language, with English as the fallback.
 - Hides when the agent needs permission or user input.
