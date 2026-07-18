@@ -10,7 +10,8 @@ Both corrections must remain visually indistinguishable from the rest of the mov
 
 - Refine only the `seatedTwist` and `wristStretch` drawing branches.
 - Keep the seated figure's pelvis, feet, head center, and torso center fixed during a seated twist.
-- Convey seated rotation with a low-amplitude change in shoulder perspective, crossed-arm depth, and face direction around the fixed body axis.
+- Convey seated rotation with a low-amplitude change in shoulder perspective, naturally bent arms held in front, and face direction around the fixed body axis.
+- Keep the seated-twist upper arms and forearms visually distinct; limb segments must not converge into a dense star-shaped intersection over the chest.
 - Keep the arms and wrist locations stable during wrist relaxation.
 - Convey wrist and finger relaxation with small, asynchronous rotations at the wrist and finger joints.
 - Reuse the existing pixel-line helper, figure proportions, mint movement color, dark overlay, border, typography, and timing.
@@ -25,7 +26,8 @@ Both corrections must remain visually indistinguishable from the rest of the mov
 ## Acceptance criteria
 
 - The seated-twist head and pelvis centers do not translate horizontally or vertically.
-- The seated-twist feet remain fixed while the shoulders, crossed arms, and face visibly alternate between left and right rotation.
+- The seated-twist feet remain fixed while the shoulders, bent arms, and face visibly alternate between left and right rotation.
+- The seated-twist elbows remain outside the torso and both hands remain near the center without the two arm paths crossing into a solid block.
 - The wrist-relaxation forearms and wrist anchors remain fixed.
 - Hand and finger motion is small, smooth, and slightly asynchronous rather than a synchronized vertical bounce.
 - Both animations retain the same figure geometry, pixelated line style, environment, and colors used by the existing catalog.

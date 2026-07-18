@@ -245,7 +245,10 @@ private final class CoachView: NSView {
         var rightFoot = CGPoint(x: 160, y: 56)
         var leftArmOrigin = neck
         var rightArmOrigin = neck
+        var leftElbow = leftHand
+        var rightElbow = rightHand
         var drawsShoulderBar = false
+        var drawsBentArms = false
         var faceOffset: CGFloat = 0
         var drawsRelaxedHands = false
         var leftWristAngle: CGFloat = 0
@@ -260,15 +263,20 @@ private final class CoachView: NSView {
             let turn = wave
             let shoulderHalfWidth = 18 - abs(turn) * 4
             let shoulderDepth = turn * 4
-            let handHalfWidth = 16 - abs(turn) * 3
-            let handDepth = turn * 3
+            let elbowHalfWidth = 25 - abs(turn) * 3
+            let elbowDepth = turn * 2.5
+            let handHalfWidth: CGFloat = 6
+            let handDepth = turn
             leftArmOrigin = CGPoint(x: 138 - shoulderHalfWidth, y: 134 - shoulderDepth)
             rightArmOrigin = CGPoint(x: 138 + shoulderHalfWidth, y: 134 + shoulderDepth)
-            leftHand = CGPoint(x: 138 + handHalfWidth, y: 113 + handDepth)
-            rightHand = CGPoint(x: 138 - handHalfWidth, y: 113 - handDepth)
+            leftElbow = CGPoint(x: 138 - elbowHalfWidth, y: 114 - elbowDepth)
+            rightElbow = CGPoint(x: 138 + elbowHalfWidth, y: 114 + elbowDepth)
+            leftHand = CGPoint(x: 138 - handHalfWidth, y: 109 - handDepth)
+            rightHand = CGPoint(x: 138 + handHalfWidth, y: 109 + handDepth)
             leftFoot = CGPoint(x: 112, y: 65)
             rightFoot = CGPoint(x: 164, y: 65)
             drawsShoulderBar = true
+            drawsBentArms = true
             faceOffset = round(turn * 3)
         case .wristStretch:
             leftHand = CGPoint(x: 116, y: 116)
@@ -295,8 +303,15 @@ private final class CoachView: NSView {
         if drawsShoulderBar {
             pixelLine(context, from: leftArmOrigin, to: rightArmOrigin, width: 7)
         }
-        pixelLine(context, from: leftArmOrigin, to: leftHand)
-        pixelLine(context, from: rightArmOrigin, to: rightHand)
+        if drawsBentArms {
+            pixelLine(context, from: leftArmOrigin, to: leftElbow)
+            pixelLine(context, from: leftElbow, to: leftHand)
+            pixelLine(context, from: rightArmOrigin, to: rightElbow)
+            pixelLine(context, from: rightElbow, to: rightHand)
+        } else {
+            pixelLine(context, from: leftArmOrigin, to: leftHand)
+            pixelLine(context, from: rightArmOrigin, to: rightHand)
+        }
         pixelLine(context, from: hip, to: leftFoot)
         pixelLine(context, from: hip, to: rightFoot)
 
