@@ -22,6 +22,8 @@ Vibe Living is deliberately small: lifecycle hooks update local session state, a
 - `scripts/vibe-living` provides the source-build fallback.
 - `harness/run.py` drives the real Hook entry point with synthetic lifecycle events in an isolated, daemon-free environment.
 
+The native view selects Simplified Chinese when the first macOS preferred-language identifier begins with `zh`; all other and unknown identifiers fall back to English. Preview rendering can inject `zh` or `en` so committed assets remain deterministic.
+
 ## Runtime state
 
 The host supplies a writable plugin data directory. Vibe Living stores:

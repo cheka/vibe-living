@@ -4,9 +4,13 @@
 
 Vibe Living is a small, local movement companion for the waiting moments in AI-assisted development. When Codex or Claude Code is working and does not need your input, a pixel-style figure demonstrates a gentle desk-friendly movement. It steps aside for approvals and questions, then disappears when the turn ends.
 
-![Vibe Living preview](plugins/vibe-living/assets/preview.png)
+![Vibe Living preview](plugins/vibe-living/assets/preview-en.png)
 
-![Vibe Living hydration reminder](plugins/vibe-living/assets/hydration-preview.png)
+![Vibe Living hydration reminder](plugins/vibe-living/assets/hydration-preview-en.png)
+
+Chinese systems automatically use Simplified Chinese:
+
+![Vibe Living Chinese preview](plugins/vibe-living/assets/preview.png)
 
 [简体中文](README.zh-CN.md)
 
@@ -21,6 +25,7 @@ Vibe Coding changes how we spend development time: less continuous typing, more 
 - Appears after the agent has worked for six seconds.
 - Rotates through small shoulder rolls, seated torso turns, wrist relaxation, quiet posture changes, and hydration reminders.
 - Keeps every movement quiet, low-amplitude, equipment-free, and within one person's desk space.
+- Automatically displays Simplified Chinese or English from the macOS preferred language, with English as the fallback.
 - Hides when the agent needs permission or user input.
 - Supports concurrent agent sessions without opening duplicate windows.
 - Double-click to pause prompts for ten minutes.

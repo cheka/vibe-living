@@ -1,6 +1,6 @@
 {
   "name": "vibe-living",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A gentle movement companion for the moments when your AI coding agent is working.",
   "author": {
     "name": "Wangjie"
@@ -21,7 +21,9 @@
     "brandColor": "#72E6B1",
     "screenshots": [
       "./assets/preview.png",
-      "./assets/hydration-preview.png"
+      "./assets/preview-en.png",
+      "./assets/hydration-preview.png",
+      "./assets/hydration-preview-en.png"
     ]
   }
 }

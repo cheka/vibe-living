@@ -4,8 +4,12 @@ All notable changes are documented here. This project follows semantic versionin
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-18
+
 ### Added
 
+- Added automatic Simplified Chinese and English overlay localization based on the macOS preferred language.
+- Added deterministic Chinese and English previews for movement and hydration prompts.
 - Added a dependency-free, headless lifecycle Harness for local development and CI.
 - Added versioned product specifications and a mandatory spec-first development workflow.
 - Added a quiet, desk-friendly hydration reminder.

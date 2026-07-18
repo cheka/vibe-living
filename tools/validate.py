@@ -33,6 +33,7 @@ def main() -> int:
         ROOT / "docs" / "specs" / "README.md",
         ROOT / "docs" / "specs" / "development-workflow.md",
         ROOT / "docs" / "specs" / "harness.md",
+        ROOT / "docs" / "specs" / "localization.md",
         ROOT / "harness" / "run.py",
     ]
     for path in required_project_files:
@@ -65,6 +66,16 @@ def main() -> int:
         target = PLUGIN / relative.removeprefix("./")
         if not target.is_file():
             errors.append(f"Missing screenshot: {relative}")
+
+    expected_screenshots = {
+        "./assets/preview.png",
+        "./assets/preview-en.png",
+        "./assets/hydration-preview.png",
+        "./assets/hydration-preview-en.png",
+    }
+    screenshots = set(codex.get("interface", {}).get("screenshots", []))
+    if screenshots != expected_screenshots:
+        errors.append("Plugin screenshots must include Chinese and English movement and hydration previews")
 
     if errors:
         for error in errors:

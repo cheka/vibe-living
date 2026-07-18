@@ -39,6 +39,8 @@ make package
 
 `make check` is the same entry point used by CI. It includes unit tests, the headless Harness, manifest validation, shell checks, and Swift type-checking. Run it before opening a pull request.
 
+`make preview` deterministically renders Chinese and English movement and hydration screenshots. The preview language override is for development assets only; production reads the macOS preferred language when the native helper starts.
+
 ## Spec-first workflow
 
 Before editing implementation code for any new requirement:

@@ -17,3 +17,4 @@ If implementation and a specification disagree, update and review the specificat
 
 - [Development workflow](development-workflow.md)
 - [Local Harness](harness.md)
+- [Overlay localization](localization.md)

@@ -11,6 +11,42 @@ private struct SessionState: Codable {
 private let staleInterval: TimeInterval = 30 * 60
 private let appearanceDelay: TimeInterval = 6
 
+private enum AppLanguage: String {
+    case simplifiedChinese = "zh"
+    case english = "en"
+
+    static var system: AppLanguage {
+        guard let preferred = Locale.preferredLanguages.first?.lowercased(), preferred.hasPrefix("zh") else {
+            return .english
+        }
+        return .simplifiedChinese
+    }
+
+    static func previewOverride(_ value: String?) -> AppLanguage {
+        guard let value else { return .system }
+        return AppLanguage(rawValue: value.lowercased()) ?? .english
+    }
+
+    var header: String {
+        switch self {
+        case .simplifiedChinese: return "VIBE LIVING · 动一动"
+        case .english: return "VIBE LIVING · MOVE"
+        }
+    }
+
+    var pause: String {
+        switch self {
+        case .simplifiedChinese: return "双击暂停"
+        case .english: return "DOUBLE-CLICK TO PAUSE"
+        }
+    }
+}
+
+private struct ExerciseCopy {
+    let title: String
+    let hint: String
+}
+
 // Keep every prompt quiet, low-amplitude, and within one person's desk space.
 // Avoid jumping, marching, deep squats, fast arm swings, or equipment.
 private enum Exercise: Int, CaseIterable {
@@ -20,23 +56,28 @@ private enum Exercise: Int, CaseIterable {
     case standReset
     case drinkWater
 
-    var title: String {
-        switch self {
-        case .shoulderRoll: return "肩膀慢慢画圈"
-        case .seatedTwist: return "坐姿轻柔转体"
-        case .wristStretch: return "放松手腕和手指"
-        case .standReset: return "安静起身，换个姿势"
-        case .drinkWater: return "喝一口水"
-        }
-    }
-
-    var hint: String {
-        switch self {
-        case .shoulderRoll: return "动作小一点，保持呼吸"
-        case .seatedTwist: return "骨盆不动，小幅转动上身"
-        case .wristStretch: return "双手留在身前，轻轻活动"
-        case .standReset: return "留在工位旁，缓慢站稳"
-        case .drinkWater: return "手边有水时，小口慢饮"
+    func copy(for language: AppLanguage) -> ExerciseCopy {
+        switch (self, language) {
+        case (.shoulderRoll, .simplifiedChinese):
+            return ExerciseCopy(title: "肩膀慢慢画圈", hint: "动作小一点，保持呼吸")
+        case (.seatedTwist, .simplifiedChinese):
+            return ExerciseCopy(title: "坐姿轻柔转体", hint: "骨盆不动，小幅转动上身")
+        case (.wristStretch, .simplifiedChinese):
+            return ExerciseCopy(title: "放松手腕和手指", hint: "双手留在身前，轻轻活动")
+        case (.standReset, .simplifiedChinese):
+            return ExerciseCopy(title: "安静起身，换个姿势", hint: "留在工位旁，缓慢站稳")
+        case (.drinkWater, .simplifiedChinese):
+            return ExerciseCopy(title: "喝一口水", hint: "手边有水时，小口慢饮")
+        case (.shoulderRoll, .english):
+            return ExerciseCopy(title: "Slow shoulder circles", hint: "Keep it small and breathe")
+        case (.seatedTwist, .english):
+            return ExerciseCopy(title: "Gentle seated twist", hint: "Keep hips still; turn gently")
+        case (.wristStretch, .english):
+            return ExerciseCopy(title: "Relax wrists and fingers", hint: "Hands in front; move gently")
+        case (.standReset, .english):
+            return ExerciseCopy(title: "Stand and reset posture", hint: "Stay by your desk; rise slowly")
+        case (.drinkWater, .english):
+            return ExerciseCopy(title: "Take a sip of water", hint: "If water is nearby, sip slowly")
         }
     }
 }
@@ -113,10 +154,12 @@ private func startDaemonIfNeeded(_ dataDirectory: URL) {
 private final class CoachView: NSView {
     var workingSince: TimeInterval = Date().timeIntervalSince1970
     var dataDirectory: URL
+    private let language: AppLanguage
     private var animationTimer: Timer?
 
-    init(frame frameRect: NSRect, dataDirectory: URL) {
+    init(frame frameRect: NSRect, dataDirectory: URL, language: AppLanguage = .system) {
         self.dataDirectory = dataDirectory
+        self.language = language
         super.init(frame: frameRect)
         wantsLayer = true
         animationTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 12.0, repeats: true) { [weak self] _ in
@@ -239,14 +282,17 @@ private final class CoachView: NSView {
         let exerciseDuration: TimeInterval = 24
         let exerciseIndex = Int(elapsed / exerciseDuration) % Exercise.allCases.count
         let exercise = Exercise(rawValue: exerciseIndex) ?? .shoulderRoll
+        let copy = exercise.copy(for: language)
         let phase = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion ? 0.25 : CGFloat(elapsed.truncatingRemainder(dividingBy: 2.4) / 2.4)
         let remaining = Int(exerciseDuration - elapsed.truncatingRemainder(dividingBy: exerciseDuration))
 
-        drawText("VIBE LIVING · 动一动", at: NSPoint(x: 20, y: 204), size: 13, color: .white, weight: .semibold)
+        drawText(language.header, at: NSPoint(x: 20, y: 204), size: 13, color: .white, weight: .semibold)
         drawPerson(context, exercise: exercise, phase: phase)
-        drawText(exercise.title, at: NSPoint(x: 20, y: 30), size: 16, color: .white, weight: .semibold)
-        drawText("\(exercise.hint)  ·  \(remaining)s", at: NSPoint(x: 20, y: 13), size: 11, color: NSColor(calibratedWhite: 0.72, alpha: 1))
-        drawText("双击暂停", at: NSPoint(x: 205, y: 211), size: 9, color: NSColor(calibratedWhite: 0.52, alpha: 1))
+        drawText(copy.title, at: NSPoint(x: 20, y: 30), size: 16, color: .white, weight: .semibold)
+        drawText("\(copy.hint)  ·  \(remaining)s", at: NSPoint(x: 20, y: 13), size: 11, color: NSColor(calibratedWhite: 0.72, alpha: 1))
+        let pauseOrigin = language == .simplifiedChinese ? NSPoint(x: 205, y: 211) : NSPoint(x: 170, y: 211)
+        let pauseSize: CGFloat = language == .simplifiedChinese ? 9 : 8
+        drawText(language.pause, at: pauseOrigin, size: pauseSize, color: NSColor(calibratedWhite: 0.52, alpha: 1))
     }
 }
 
@@ -351,10 +397,15 @@ private func runDaemon(dataDirectory: URL) -> Never {
     exit(0)
 }
 
-private func renderPreview(to outputURL: URL, dataDirectory: URL, elapsed: TimeInterval = 10) {
+private func renderPreview(
+    to outputURL: URL,
+    dataDirectory: URL,
+    elapsed: TimeInterval = 10,
+    language: AppLanguage = .system
+) {
     _ = NSApplication.shared
     let frame = NSRect(x: 0, y: 0, width: 280, height: 244)
-    let view = CoachView(frame: frame, dataDirectory: dataDirectory)
+    let view = CoachView(frame: frame, dataDirectory: dataDirectory, language: language)
     view.workingSince = Date().timeIntervalSince1970 - elapsed
     guard let bitmap = view.bitmapImageRepForCachingDisplay(in: frame) else { return }
     view.cacheDisplay(in: frame, to: bitmap)
@@ -365,10 +416,12 @@ private func renderPreview(to outputURL: URL, dataDirectory: URL, elapsed: TimeI
 let arguments = CommandLine.arguments
 if arguments.count >= 4, arguments[1] == "--render-preview" {
     let elapsed = arguments.count >= 5 ? TimeInterval(arguments[4]) ?? 10 : 10
+    let language = AppLanguage.previewOverride(arguments.count >= 6 ? arguments[5] : nil)
     renderPreview(
         to: URL(fileURLWithPath: arguments[2]),
         dataDirectory: URL(fileURLWithPath: arguments[3], isDirectory: true),
-        elapsed: elapsed
+        elapsed: elapsed,
+        language: language
     )
     exit(0)
 }
