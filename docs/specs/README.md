@@ -16,6 +16,7 @@ If implementation and a specification disagree, update and review the specificat
 ## Specifications
 
 - [Development workflow](development-workflow.md)
+- [Design asset management](design-assets.md)
 - [Exercise motion](exercise-motion.md)
 - [Local Harness](harness.md)
 - [Overlay localization](localization.md)

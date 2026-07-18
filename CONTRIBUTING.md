@@ -10,8 +10,9 @@ Thank you for helping make AI-assisted development a little more human.
 4. Avoid medical claims. Movement copy should be optional, gentle, and easy to stop.
 5. Keep movements office-friendly: quiet, low-amplitude, equipment-free, and within one person's desk space. Do not add jumping, marching, deep squats, fast arm swings, or shared-walkway activities.
 6. Add or update tests and Harness scenarios for behavior changes.
-7. Run `make check`.
-8. Commit the completed change with a focused Conventional Commit-style message.
+7. Put every runtime design asset, published screenshot, and documentation image under repository management; declare plugin assets in `plugins/vibe-living/assets/manifest.json`.
+8. Run `make check`.
+9. Commit the completed change with a focused Conventional Commit-style message.
 
 ## Pull requests
 

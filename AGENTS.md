@@ -16,6 +16,7 @@
 - Treat movement copy as optional general activity guidance, never medical advice or a health-outcome claim.
 - Keep movements quiet, low-amplitude, equipment-free, and within one person's desk space; never add jumping, marching, deep squats, fast arm swings, or shared-walkway activities.
 - A hook failure must never block or alter an agent action.
+- Keep every runtime design asset, published screenshot, and official documentation image in the repository. Declare plugin assets in `plugins/vibe-living/assets/manifest.json`; temporary QA frames must never be referenced by shipped code or documentation.
 
 ## Development
 

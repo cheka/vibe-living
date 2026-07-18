@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "path": "preview.png",
+      "purpose": "Simplified Chinese movement preview"
+    },
+    {
+      "path": "preview-en.png",
+      "purpose": "English movement preview"
+    },
+    {
+      "path": "hydration-preview.png",
+      "purpose": "Simplified Chinese hydration preview"
+    },
+    {
+      "path": "hydration-preview-en.png",
+      "purpose": "English hydration preview"
+    }
+  ]
+}
