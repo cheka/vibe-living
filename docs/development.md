@@ -14,6 +14,7 @@ No third-party runtime dependencies are required.
 
 ```text
 .agents/plugins/marketplace.json   Codex marketplace catalog
+.claude-plugin/marketplace.json    Claude marketplace catalog
 plugins/vibe-living/               Installable plugin
   .codex-plugin/plugin.json        Codex manifest
   .claude-plugin/plugin.json       Claude Code manifest

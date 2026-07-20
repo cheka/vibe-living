@@ -136,12 +136,41 @@ def design_asset_errors(
     return errors
 
 
+def marketplace_errors(
+    codex_marketplace: dict,
+    claude_marketplace: dict,
+    claude_manifest: dict,
+) -> list[str]:
+    errors: list[str] = []
+
+    codex_entries = codex_marketplace.get("plugins", [])
+    if len(codex_entries) != 1 or codex_entries[0].get("name") != "vibe-living":
+        errors.append("Codex marketplace must contain exactly the vibe-living plugin")
+    elif codex_entries[0].get("source", {}).get("path") != "./plugins/vibe-living":
+        errors.append("Codex marketplace source path is incorrect")
+
+    if claude_marketplace.get("name") != "vibe-living":
+        errors.append("Claude marketplace name must be vibe-living")
+    claude_entries = claude_marketplace.get("plugins", [])
+    if len(claude_entries) != 1 or claude_entries[0].get("name") != "vibe-living":
+        errors.append("Claude marketplace must contain exactly the vibe-living plugin")
+    else:
+        entry = claude_entries[0]
+        if entry.get("source") != "./plugins/vibe-living":
+            errors.append("Claude marketplace source path is incorrect")
+        if entry.get("version") != claude_manifest.get("version"):
+            errors.append("Claude marketplace and plugin manifest versions must match")
+
+    return errors
+
+
 def main() -> int:
     errors: list[str] = []
     codex = load(PLUGIN / ".codex-plugin" / "plugin.json")
     claude = load(PLUGIN / ".claude-plugin" / "plugin.json")
     hooks = load(PLUGIN / "hooks" / "hooks.json")
-    marketplace = load(ROOT / ".agents" / "plugins" / "marketplace.json")
+    codex_marketplace = load(ROOT / ".agents" / "plugins" / "marketplace.json")
+    claude_marketplace = load(ROOT / ".claude-plugin" / "marketplace.json")
     tracked = tracked_files(ROOT)
 
     required_project_files = [
@@ -164,11 +193,7 @@ def main() -> int:
     if codex.get("version") != claude.get("version"):
         errors.append("Codex and Claude manifest versions must match")
 
-    entries = marketplace.get("plugins", [])
-    if len(entries) != 1 or entries[0].get("name") != "vibe-living":
-        errors.append("Marketplace must contain exactly the vibe-living plugin")
-    elif entries[0].get("source", {}).get("path") != "./plugins/vibe-living":
-        errors.append("Marketplace source path is incorrect")
+    errors.extend(marketplace_errors(codex_marketplace, claude_marketplace, claude))
 
     required_events = {
         "SessionStart", "UserPromptSubmit", "PreToolUse",

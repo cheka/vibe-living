@@ -4,6 +4,10 @@ All notable changes are documented here. This project follows semantic versionin
 
 ## [Unreleased]
 
+### Added
+
+- Added a public Claude plugin marketplace catalog and persistent installation instructions for macOS Claude Desktop Local Code sessions and Claude Code CLI.
+
 ### Fixed
 
 - Refined seated-twist motion around a fixed body axis with a clear, naturally bent-arm silhouette, and replaced the wrist exercise's synchronized hand bounce with subtle wrist-and-finger articulation while preserving the existing pixel figure and overlay style.

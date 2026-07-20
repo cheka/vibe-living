@@ -1,0 +1,14 @@
+{
+  "name": "vibe-living",
+  "owner": {
+    "name": "Wangjie"
+  },
+  "plugins": [
+    {
+      "name": "vibe-living",
+      "source": "./plugins/vibe-living",
+      "description": "A gentle movement companion for the moments when your AI coding agent is working.",
+      "version": "0.2.0"
+    }
+  ]
+}

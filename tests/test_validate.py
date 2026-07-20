@@ -50,5 +50,57 @@ class DesignAssetValidationTests(unittest.TestCase):
             self.assertTrue(any("outside the asset manifest" in error for error in errors))
 
 
+class MarketplaceValidationTests(unittest.TestCase):
+    def test_accepts_aligned_codex_and_claude_marketplaces(self) -> None:
+        codex = {
+            "plugins": [
+                {
+                    "name": "vibe-living",
+                    "source": {"source": "local", "path": "./plugins/vibe-living"},
+                }
+            ]
+        }
+        claude = {
+            "name": "vibe-living",
+            "plugins": [
+                {
+                    "name": "vibe-living",
+                    "source": "./plugins/vibe-living",
+                    "version": "0.2.0",
+                }
+            ],
+        }
+
+        self.assertEqual(
+            VALIDATE.marketplace_errors(codex, claude, {"version": "0.2.0"}),
+            [],
+        )
+
+    def test_rejects_misaligned_claude_marketplace(self) -> None:
+        codex = {
+            "plugins": [
+                {
+                    "name": "vibe-living",
+                    "source": {"source": "local", "path": "./plugins/vibe-living"},
+                }
+            ]
+        }
+        claude = {
+            "name": "vibe-living",
+            "plugins": [
+                {
+                    "name": "vibe-living",
+                    "source": "./wrong-path",
+                    "version": "0.1.0",
+                }
+            ],
+        }
+
+        errors = VALIDATE.marketplace_errors(codex, claude, {"version": "0.2.0"})
+
+        self.assertIn("Claude marketplace source path is incorrect", errors)
+        self.assertIn("Claude marketplace and plugin manifest versions must match", errors)
+
+
 if __name__ == "__main__":
     unittest.main()
