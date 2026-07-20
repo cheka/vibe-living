@@ -211,22 +211,22 @@ private final class CoachView: NSView {
         wristAngle: CGFloat,
         fingerPhase: CGFloat
     ) {
-        let palmBase = CGPoint(x: wrist.x, y: wrist.y - 8)
+        let palmBase = CGPoint(x: wrist.x, y: wrist.y - 12)
         let palm = rotatedPoint(palmBase, around: wrist, by: wristAngle)
-        pixelLine(context, from: wrist, to: palm, width: 5)
+        pixelLine(context, from: wrist, to: palm, width: 6)
 
-        let fingerOffsets: [(CGFloat, CGFloat)] = [(-4, -8), (0, -10), (4, -8)]
+        let fingerOffsets: [(CGFloat, CGFloat)] = [(-6, -12), (0, -15), (6, -12)]
         for (index, offset) in fingerOffsets.enumerated() {
-            let fingerAngle = sin((fingerPhase + CGFloat(index) * 0.19) * .pi * 2) * 0.05
+            let fingerAngle = sin((fingerPhase + CGFloat(index) * 0.19) * .pi * 2) * 0.09
             let unrotatedTip = CGPoint(x: palmBase.x + offset.0, y: palmBase.y + offset.1)
             let relaxedTip = rotatedPoint(unrotatedTip, around: palmBase, by: fingerAngle * mirror)
             let tip = rotatedPoint(relaxedTip, around: wrist, by: wristAngle)
-            pixelLine(context, from: palm, to: tip, width: 3)
+            pixelLine(context, from: palm, to: tip, width: 4)
         }
 
-        let thumbBase = CGPoint(x: palmBase.x + mirror * 6, y: palmBase.y - 4)
+        let thumbBase = CGPoint(x: palmBase.x + mirror * 9, y: palmBase.y - 6)
         let thumb = rotatedPoint(thumbBase, around: wrist, by: wristAngle)
-        pixelLine(context, from: palm, to: thumb, width: 3)
+        pixelLine(context, from: palm, to: thumb, width: 4)
     }
 
     private func drawPerson(_ context: CGContext, exercise: Exercise, phase: CGFloat) {
@@ -249,6 +249,7 @@ private final class CoachView: NSView {
         var rightElbow = rightHand
         var drawsShoulderBar = false
         var drawsBentArms = false
+        var drawsChair = false
         var faceOffset: CGFloat = 0
         var drawsRelaxedHands = false
         var leftWristAngle: CGFloat = 0
@@ -257,8 +258,19 @@ private final class CoachView: NSView {
         switch exercise {
         case .shoulderRoll:
             let angle = phase * .pi * 2
-            leftHand = CGPoint(x: 100 + cos(angle) * 5, y: 106 + sin(angle) * 7)
-            rightHand = CGPoint(x: 176 - cos(angle) * 5, y: 106 - sin(angle) * 7)
+            let lagAngle = (phase - 0.12) * .pi * 2
+            let rollX = cos(angle) * 6
+            let rollY = sin(angle) * 6
+            let lagX = cos(lagAngle) * 5
+            let lagY = sin(lagAngle) * 4
+            leftArmOrigin = CGPoint(x: 120 + rollX, y: 134 + rollY)
+            rightArmOrigin = CGPoint(x: 156 - rollX, y: 134 + rollY)
+            leftElbow = CGPoint(x: 112 + lagX, y: 114 + lagY)
+            rightElbow = CGPoint(x: 164 - lagX, y: 114 + lagY)
+            leftHand = CGPoint(x: 116, y: 98 + lagY * 0.4)
+            rightHand = CGPoint(x: 160, y: 98 + lagY * 0.4)
+            drawsShoulderBar = true
+            drawsBentArms = true
         case .seatedTwist:
             let turn = wave
             let shoulderHalfWidth = 18 - abs(turn) * 4
@@ -277,13 +289,14 @@ private final class CoachView: NSView {
             rightFoot = CGPoint(x: 164, y: 65)
             drawsShoulderBar = true
             drawsBentArms = true
+            drawsChair = true
             faceOffset = round(turn * 3)
         case .wristStretch:
             leftHand = CGPoint(x: 116, y: 116)
             rightHand = CGPoint(x: 160, y: 116)
             drawsRelaxedHands = true
-            leftWristAngle = wave * 0.14
-            rightWristAngle = sin((phase + 0.18) * .pi * 2) * 0.14
+            leftWristAngle = wave * 0.22
+            rightWristAngle = sin((phase + 0.18) * .pi * 2) * 0.22
         case .standReset:
             let rise = 5 + abs(wave) * 6
             head.y += rise
@@ -295,6 +308,15 @@ private final class CoachView: NSView {
             head.x += wave * 2
             leftHand = CGPoint(x: 106, y: 100)
             rightHand = CGPoint(x: 158 + wave * 2, y: 151)
+        }
+
+        if drawsChair {
+            let chairColor = NSColor(calibratedWhite: 0.42, alpha: 1).cgColor
+            context.setStrokeColor(chairColor)
+            pixelLine(context, from: CGPoint(x: 108, y: 88), to: CGPoint(x: 168, y: 88), width: 6)
+            pixelLine(context, from: CGPoint(x: 112, y: 88), to: CGPoint(x: 112, y: 56), width: 5)
+            pixelLine(context, from: CGPoint(x: 164, y: 88), to: CGPoint(x: 164, y: 56), width: 5)
+            context.setStrokeColor(NSColor(calibratedRed: 0.45, green: 0.90, blue: 0.69, alpha: 1).cgColor)
         }
 
         let shoulder = neck
