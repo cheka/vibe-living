@@ -258,14 +258,17 @@ private final class CoachView: NSView {
         switch exercise {
         case .shoulderRoll:
             let angle = phase * .pi * 2
-            let rollX = cos(angle) * 3
-            let rollY = sin(angle) * 5
+            let lagAngle = (phase - 0.12) * .pi * 2
+            let rollX = cos(angle) * 6
+            let rollY = sin(angle) * 6
+            let lagX = cos(lagAngle) * 5
+            let lagY = sin(lagAngle) * 4
             leftArmOrigin = CGPoint(x: 120 + rollX, y: 134 + rollY)
             rightArmOrigin = CGPoint(x: 156 - rollX, y: 134 + rollY)
-            leftElbow = CGPoint(x: 112 + rollX, y: 114 + rollY * 0.6)
-            rightElbow = CGPoint(x: 164 - rollX, y: 114 + rollY * 0.6)
-            leftHand = CGPoint(x: 116, y: 98 + rollY * 0.25)
-            rightHand = CGPoint(x: 160, y: 98 + rollY * 0.25)
+            leftElbow = CGPoint(x: 112 + lagX, y: 114 + lagY)
+            rightElbow = CGPoint(x: 164 - lagX, y: 114 + lagY)
+            leftHand = CGPoint(x: 116, y: 98 + lagY * 0.4)
+            rightHand = CGPoint(x: 160, y: 98 + lagY * 0.4)
             drawsShoulderBar = true
             drawsBentArms = true
         case .seatedTwist:
