@@ -19,4 +19,5 @@ If implementation and a specification disagree, update and review the specificat
 - [Design asset management](design-assets.md)
 - [Exercise motion](exercise-motion.md)
 - [Local Harness](harness.md)
+- [Installation documentation](installation.md)
 - [Overlay localization](localization.md)

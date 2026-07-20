@@ -37,34 +37,78 @@ Vibe Coding changes how we spend development time: less continuous typing, more 
 
 - macOS 13 or newer
 - Apple silicon for the bundled binary; Intel Macs require Xcode Command Line Tools
-- Codex/ChatGPT desktop with plugin lifecycle hooks, or Claude Code with plugin hooks
+- Codex/ChatGPT desktop with plugin lifecycle hooks and the `codex plugin` command, or Claude Code with plugin hooks
+- An internet connection for the initial download and updates
 
-## Install for Codex
+## Install
 
-After this repository is published, replace `<github-owner>` with the repository owner:
+### Codex / ChatGPT desktop
+
+Run these commands in Terminal:
 
 ```bash
-codex plugin marketplace add <github-owner>/vibe-living
+codex plugin marketplace add cheka/vibe-living
 codex plugin add vibe-living@vibe-living
 ```
 
-Restart the desktop app, enable **Vibe Living**, review and trust its lifecycle hooks, and start a new task.
+Then:
 
-For local development:
+1. Restart the desktop app.
+2. Confirm that **Vibe Living** is enabled in the plugin list, and review and trust its lifecycle hooks if prompted.
+3. Start a new task and let the agent work for at least six seconds. The movement companion should appear while the agent is working, hide when an approval or answer is needed, and disappear when the turn ends.
+
+Vibe Living starts automatically through lifecycle hooks; there is no command to run inside a task.
+
+### Update
+
+Refresh the marketplace, then reinstall the plugin so the latest packaged version is used:
 
 ```bash
-codex plugin marketplace add /absolute/path/to/vibe-living
+codex plugin marketplace upgrade vibe-living
+codex plugin remove vibe-living@vibe-living
 codex plugin add vibe-living@vibe-living
 ```
+
+Restart the desktop app after updating.
+
+### Uninstall
+
+```bash
+codex plugin remove vibe-living@vibe-living
+codex plugin marketplace remove vibe-living
+```
+
+The second command also removes the Vibe Living marketplace source.
 
 ## Try with Claude Code
 
+The repository is not yet a persistent Claude Code marketplace. To load Vibe Living for one Claude Code session:
+
 ```bash
-git clone https://github.com/<github-owner>/vibe-living.git
-claude --plugin-dir ./vibe-living/plugins/vibe-living
+git clone https://github.com/cheka/vibe-living.git
+cd vibe-living
+claude --plugin-dir "$PWD/plugins/vibe-living"
 ```
 
-Open `/hooks` to review the registered plugin hooks.
+Inside that session, open `/hooks` to review the registered lifecycle hooks. Closing the session unloads the plugin; the clone remains on disk.
+
+## Troubleshooting
+
+- **`codex plugin` is unavailable:** update to a Codex/ChatGPT desktop release that supports plugin lifecycle hooks.
+- **Nothing appears:** start a new task and let the agent work uninterrupted for at least six seconds. The overlay is intentionally hidden while the agent is waiting for you and after the turn finishes.
+- **Intel Mac does not start the overlay:** install Xcode Command Line Tools with `xcode-select --install`, then start a new task. The native helper is built locally on first use.
+- **Hooks are disabled:** enable Vibe Living in the plugin list and approve its lifecycle hooks. Hook failures never block the agent, so a disabled or failed hook may otherwise be silent.
+
+## Local development
+
+Clone the repository, register that checkout as a local marketplace, and install from it:
+
+```bash
+git clone https://github.com/cheka/vibe-living.git
+cd vibe-living
+codex plugin marketplace add "$PWD"
+codex plugin add vibe-living@vibe-living
+```
 
 ## Development
 
